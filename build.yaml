@@ -6,6 +6,7 @@ include:
   - board: seeeduino_xiao_ble
     shield: totem_dongle dongle_display
     snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y
 
   
 # there is no settingsreset (needed) for the XIAO
