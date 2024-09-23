@@ -11,6 +11,8 @@
     chosen {
         zmk,physical_layout = &default_layout;
         zmk,studio-rpc-uart = &uart1;
+        zephyr,display = &oled;
+
     };
 
     default_transform: default_transform {
@@ -93,4 +95,24 @@
 			, <&key_physical_attrs 100 100 900  300 0 0 0>
 			;
 	};
+
+    &xiao_i2c {
+        status = "okay";
+
+        oled: sh1106@3c {
+            compatible = "sinowealth,sh1106";
+            reg = <0x3c>;
+            width = <129>;
+            height = <64>;
+            segment-offset = <1>;
+            page-offset = <0>;
+            display-offset = <0>;
+            multiplex-ratio = <63>;
+            segment-remap;
+            com-invdir;
+            inversion-on;
+            prechargep = <0x22>;
+        };
+    };
+
 };
