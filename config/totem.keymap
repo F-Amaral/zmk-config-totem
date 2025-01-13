@@ -157,10 +157,10 @@
 
         gaming {
             bindings = <
-       &kp TAB         &kp Q  &kp W      &kp E         &kp R      &trans  &trans  &trans  &trans  &trans
-       &kp LEFT_SHIFT  &kp A  &kp S      &kp D         &kp F      &trans  &trans  &trans  &trans  &trans
-&sl 4  &kp Z           &kp X  &kp C      &kp G         &kp V      &trans  &trans  &trans  &trans  &trans  &trans
-                              &kp LCTRL  &kp LEFT_ALT  &kp SPACE  &trans  &trans  &trans
+       &kp TAB         &kp Q  &kp W      &kp E  &kp R      &trans  &trans  &trans  &trans  &trans
+       &kp LEFT_SHIFT  &kp A  &kp S      &kp D  &kp F      &trans  &trans  &trans  &trans  &trans
+&sl 4  &kp Z           &kp X  &kp C      &kp V  &kp G      &trans  &trans  &trans  &trans  &trans  &trans
+                              &kp LCTRL  &mo 4  &kp SPACE  &trans  &trans  &trans
             >;
 
             label = "GAME";
@@ -168,10 +168,10 @@
 
         gamingnum {
             bindings = <
-        &kp F10  &kp N1  &kp N2  &kp N3  &kp T       &trans  &trans  &trans  &trans  &trans
-        &kp L    &kp N0  &kp Y   &kp K   &kp G       &trans  &trans  &trans  &trans  &trans
-&trans  &to 0    &kp N4  &kp N5  &kp N6  &kp ESCAPE  &trans  &trans  &trans  &trans  &trans  &trans
-                         &kp J   &kp I   &kp M       &trans  &trans  &trans
+        &kp NUMBER_1  &kp NUMBER_2  &trans  &kp N3  &kp NUMBER_4  &trans  &trans  &trans  &trans  &trans
+        &kp L         &trans        &trans  &trans  &kp T         &trans  &trans  &trans  &trans  &trans
+&trans  &to 0         &trans        &trans  &trans  &kp ESCAPE    &trans  &trans  &trans  &trans  &trans  &trans
+                                    &kp J   &trans  &kp M         &trans  &trans  &trans
             >;
 
             label = "GAM+";
