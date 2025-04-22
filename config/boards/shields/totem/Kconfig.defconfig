@@ -6,17 +6,21 @@ if SHIELD_TOTEM_DONGLE
 config ZMK_KEYBOARD_NAME
     default "TOTEM"
     
+config ZMK_SPLIT
+    default y
+
 config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+config ZMK_BLE
     default n
 
 config ZMK_USB
     default y
 
-config ZMK_BLE
-    default n
 endif 
 
-if SHIELD_TOTEM_LEFT || SHIELD_TOTEM_RIGHT
+if SHIELD_TOTEM_LEFT || SHIELD_TOTEM_RIGHT 
 
 config ZMK_SPLIT
     default y
@@ -24,16 +28,4 @@ config ZMK_SPLIT
 config ZMK_BLE
     default y
 
-config ZMK_USB
-    default n
-
-endif
-
-if SHIELD_TOTEM_DONGLE
-
-config ZMK_BLE 
-    default n
-
-config ZMK_SPLIT_ROLE_CENTRAL
-    default y
 endif
