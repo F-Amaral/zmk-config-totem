@@ -18,6 +18,9 @@ config ZMK_BLE
 config ZMK_USB
     default y
 
+config ZMK_USB_BOOT
+    default y 
+
 endif 
 
 if SHIELD_TOTEM_LEFT || SHIELD_TOTEM_RIGHT 
