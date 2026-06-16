@@ -1,19 +1,3 @@
-/*
- * Custom USB HID interface that exposes the left and right split-half
- * battery levels of a ZMK split keyboard to the host. Used by the
- * zmk-split-battery-tray GNOME Shell extension on Linux to render
- * battery percentages in the top bar.
- *
- * Lives on the dongle (central) build only. Subscribes to ZMK's
- * peripheral battery events (which fire when
- * CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING is enabled) and
- * pushes a 2-byte input report to a second USB HID interface (HID_1)
- * every time a value changes.
- *
- * Report layout (Report ID 0x01):
- *     byte 0: left battery state of charge  (0..100, 0xFF = unknown)
- *     byte 1: right battery state of charge (0..100, 0xFF = unknown)
- */
 
 #include <zephyr/kernel.h>
 #include <zephyr/init.h>
@@ -29,21 +13,22 @@ LOG_MODULE_REGISTER(zmk_split_battery, CONFIG_ZMK_LOG_LEVEL);
 
 #define REPORT_ID_BATTERY 0x01
 #define BATTERY_UNKNOWN   0xFF
+#define PERIODIC_RESEND_SEC 30
 
 static const uint8_t hid_report_desc[] = {
-    0x06, 0x00, 0xFF, /* Usage Page (Vendor-Defined 0xFF00)             */
-    0x09, 0x01,       /* Usage (0x01) — split battery device            */
-    0xA1, 0x01,       /* Collection (Application)                       */
-    0x85, REPORT_ID_BATTERY, /*   Report ID (1)                         */
-    0x15, 0x00,       /*   Logical Minimum (0)                          */
-    0x26, 0xFF, 0x00, /*   Logical Maximum (255)                        */
-    0x75, 0x08,       /*   Report Size (8)                              */
-    0x95, 0x01,       /*   Report Count (1)                             */
-    0x09, 0x01,       /*   Usage (0x01) — left battery                  */
-    0x81, 0x02,       /*   Input (Data, Variable, Absolute)             */
-    0x09, 0x02,       /*   Usage (0x02) — right battery                 */
-    0x81, 0x02,       /*   Input (Data, Variable, Absolute)             */
-    0xC0,             /* End Collection                                 */
+    0x06, 0x00, 0xFF,
+    0x09, 0x01,
+    0xA1, 0x01,
+    0x85, REPORT_ID_BATTERY,
+    0x15, 0x00,
+    0x26, 0xFF, 0x00,
+    0x75, 0x08,
+    0x95, 0x01,
+    0x09, 0x01,
+    0x81, 0x02,
+    0x09, 0x02,
+    0x81, 0x02,
+    0xC0,
 };
 
 static const struct device *hid_dev;
@@ -79,6 +64,15 @@ static int send_report(void)
     return err;
 }
 
+static void periodic_handler(struct k_work *work);
+static K_WORK_DELAYABLE_DEFINE(periodic_work, periodic_handler);
+
+static void periodic_handler(struct k_work *work)
+{
+    send_report();
+    k_work_reschedule(&periodic_work, K_SECONDS(PERIODIC_RESEND_SEC));
+}
+
 static int zmk_split_battery_hid_init(void)
 {
     hid_dev = device_get_binding("HID_1");
@@ -93,6 +87,7 @@ static int zmk_split_battery_hid_init(void)
         LOG_ERR("usb_hid_init(HID_1) failed: %d", err);
         return err;
     }
+    k_work_schedule(&periodic_work, K_SECONDS(PERIODIC_RESEND_SEC));
     LOG_INF("split battery HID interface initialized on HID_1");
     return 0;
 }
